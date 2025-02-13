@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { assets } from "../../assets/assets";
 import { Link } from "react-router-dom";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import { AppContext } from "../../context/AppContext";
 
 const Navbar = () => {
+  const { navigate, isEducator } = useContext(AppContext);
   const isCourseListPage = location.pathname.includes("/course-list");
 
   //Clerk
@@ -17,6 +19,7 @@ const Navbar = () => {
       }`}
     >
       <img
+        onClick={() => navigate("/")}
         src={assets.logo}
         alt="Logo"
         className="w-28 lg:w-32 coursor-pointer"
@@ -26,8 +29,14 @@ const Navbar = () => {
         <div className="flex items-center gap-5">
           {user && (
             <>
-              <button>Become Educator</button> |
-              <Link to="/my-enrollments">My Enrollments</Link>
+              <button
+                onClick={(e) => {
+                  isEducator ? navigate("/educator") : "";
+                }}
+              >
+                {isEducator ? "Educator Dashboard" : "Become Educator"}
+              </button>{" "}
+              |<Link to="/my-enrollments">My Enrollments</Link>
             </>
           )}
         </div>
@@ -49,16 +58,24 @@ const Navbar = () => {
         <div className="flex items-center gap-1 sm:gap-2 max-sm:text-xs">
           {user && (
             <>
-              <button>Become Educator</button> |
-              <Link to="/my-enrollments">My Enrollments</Link>
+              <button
+                onClick={(e) => {
+                  isEducator ? navigate("/educator") : "";
+                }}
+              >
+                {isEducator ? "Educator Dashboard" : "Become Educator"}
+              </button>{" "}
+              |<Link to="/my-enrollments">My Enrollments</Link>
             </>
           )}
         </div>
-        {
-          user ? <UserButton/> : <button onClick={()=>openSignIn()} className="">
-          <img src={assets.user_icon} alt="" />
-        </button>
-        }
+        {user ? (
+          <UserButton />
+        ) : (
+          <button onClick={() => openSignIn()} className="">
+            <img src={assets.user_icon} alt="" />
+          </button>
+        )}
       </div>
     </div>
   );
